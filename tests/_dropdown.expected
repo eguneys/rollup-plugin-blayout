@@ -20,14 +20,14 @@ let _Dropdown = (drops, selected_index) => _ctor(Dropdown_$, drops, selected_ind
 let _ScrollableView = () => _ctor(ScrollableView_$)
 let _List = (items) => _ctor(List_$, items)
 let _ScrollThumb = () => _ctor(ScrollThumb_$)
-let _ScrollBar = (children) => _ctor(ScrollBar_$)
+let _ScrollBar = () => _ctor(ScrollBar_$)
 let _ClipView = () => _ctor(ClipView_$)
 
-let ScrollBar = () => {
+let ScrollBar = (content) => {
   let parent = _ScrollBar()
 
   let children = [
-    _ScrollThumb()
+    content
   ]
 
   children.forEach(_ => _.parent = parent)

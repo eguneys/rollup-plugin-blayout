@@ -13,6 +13,6 @@ it('works', () => {
 
 it.only('dropdown list', () => {
 
-  //console.log(compileFileToJs(fixtures.dropdown))
+  console.log(compileFileToJs(fixtures.dropdown))
   expect(compileFileToJs(fixtures.dropdown)).toBe(fixtures.expected_dropdown)
 })

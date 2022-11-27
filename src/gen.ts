@@ -1,21 +1,21 @@
-let t_imports = (ctors: Array<string>) => `import { View, _ctor } from './views'
+let t_imports = (ctors: Array<[string, string]>) => `import { View, _ctor } from './views'
 import {
-${ctors.map(ctor => `${ctor} as ${ctor}_$`).join(',\n')}
+${ctors.map(([ctor, $args]) => `${ctor} as ${ctor}_$`).join(',\n')}
 } from './views'`
 
-let t_ctors = (ctors: Array<string>) => 
-ctors.map(([ctor, $args]) => `let _${ctor} = (${$args}) => _ctor(${ctor}, ${$args})`)
+let t_ctors = (ctors: Array<[string, string]>) => 
+ctors.map(([ctor, $args]) => `let _${ctor} = (${$args}) => _ctor(${ctor}_$, ${$args})`).join('\n')
 
 
 let t_views = (views: Array<View>) =>
 views.map(view => `let ${view.head} = (${view.$args}) => {
   let parent = _${view.head}(${view.$args})
-${view.$children}
+${t_children(view.children)}
   children.forEach(_ => _.parent = parent)
   parent.children = children
 
   return parent
-}`)
+}`).join('\n')
 
 let t_child_head = (_: Head) => `let _${_.head}(${_.$args})`
 let t_child_content = (_: Content) => _
@@ -96,7 +96,8 @@ const isFor = (_: Child): _ is For => {
 type View = {
   head: string,
   $args: string,
-  $children: string
+  children: Array<Child>,
+  ctors: Array<string>
 }
 
 type Head = {
@@ -154,56 +155,35 @@ function get_children(depth: number, rest: Array<string>): [Array<string>, Array
     return [rest, []]
   }
 
-  if (depths[ic]! <= depth) {
+  if (ic === 0) {
     return undefined
   }
 
   return [rest.slice(0, ic), rest.slice(ic)]
 }
 
-function consume(_: Array<string>): [string | undefined, Array<string>] {
+function get_view(def: string) {
+  let [head, ...rest] = def.split('\n')
 
+  let $args = get_only_args(rest).map(transform_arg).join(', ')
+  let children = get_children(0, rest)
 
-  let [head, ...rest] = _
+  let ctors = []
 
-  let depth = depth_of(head)!
-
-  let children = get_children(depth, rest)
-
-  if (!children) {
-
-
-
+  return {
+    head,
+    $args,
+    children: [],
+    ctors
   }
-
-  return [undefined, []]
 }
 
 export function compileFileToJs(src: string) {
 
-  let ctors: Array<string> = []
-  let views: Array<View> = []
-
   let _ = src.split('\n\n')
 
-  _.forEach(def => {
-
-    let [head, ...rest] =  def.trim().split('\n')
-
-    let args = get_only_args(rest)
-
-    let children = []
-
-    let next = rest
-    while (next.length > 0) {
-      let [child, _rest] = consume(next)
-      if (child) {
-        children.push(child)
-      }
-      next= _rest
-    }
-  })
-
+  let views = _.map(get_view)
+  let ctors = views.map(_ => [_.head, _.$args])
 
   return [t_imports(ctors), 
     t_ctors(ctors),
