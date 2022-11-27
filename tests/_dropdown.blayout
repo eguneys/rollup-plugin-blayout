@@ -16,6 +16,12 @@ List<Content>
     `${Content}` `:Item0`
     `${Content}` `:Item1`
 
+ScrollBar
+  `${content}`
+
+ClipView
+  `${content}`
+
 ScrollableView
   ScrollBar
     ScrollThumb
