@@ -1,0 +1,17 @@
+{
+  "name": "rollup-plugin-blayout",
+  "private": true,
+  "version": "0.0.0",
+  "exports": "./dist/index.js",
+  "scripts": {
+    "test": "vitest --watch",
+    "lint": "tsc --noEmit --watch",
+    "build": "esbuild src/index.ts --bundle --platform=node --outfile=dist/index.js"
+  },
+  "devDependencies": {
+    "esbuild": "^0.15.15",
+    "typescript": "^4.6.4",
+    "vite": "^3.2.3",
+    "vitest": "^0.25.3"
+  }
+}

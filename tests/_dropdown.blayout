@@ -1,0 +1,23 @@
+DropdownListItem
+  Hitbox `.on_click`
+  Text `${item}`
+
+Dropdown
+  Hitbox `.on_click`
+  Text `.active`
+  Icon drop
+  `.a_view_ref_to_show_when_is_open`
+    List<DropdownListItem> `${drops}`
+  _ `${selected_index}`
+
+List<Content>
+  ScrollableView
+    `${items:Item0,Item1}`
+    `${Content}` `:Item0`
+    `${Content}` `:Item1`
+
+ScrollableView
+  ScrollBar
+    ScrollThumb
+  ClipView
+    `${content}` 

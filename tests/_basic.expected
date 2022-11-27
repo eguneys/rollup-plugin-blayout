@@ -1,0 +1,25 @@
+import { View, _ctor } from './views'
+import {
+  App as App_$,
+  Scene as Scene_$,
+  Dropdown as _Dropdown_$
+} from './views'
+
+let _App = (drops, selected_index) => _ctor(App_$, drops, selected_index)
+let _Scene = () => _ctor(Scene_$)
+let _Dropdown = (items) => _ctor(Dropdown_$, items)
+ 
+
+export const App = (drops, selected_index) => {
+  let parent = _App(drops, selected_index)
+  
+  let children = [
+    _Scene()
+    _Dropdown(drops)
+  ]
+
+  children.forEach(_ => _.parent = parent)
+  parent.children = children
+
+  return parent
+}

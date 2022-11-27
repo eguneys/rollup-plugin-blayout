@@ -1,0 +1,122 @@
+import { View, _ctor } from './views'
+import {
+  Hitbox as Hitbox_$,
+  Text as Text_$,
+  DropdownListItem as DropdownListItem_$,
+  Dropdown as Dropdown_$,
+  List as List_$,
+  ScrollableView as ScrollableView_$,
+  ScrollBar as ScrollBar_$,
+  ScrollThumb as ScrollThumb_$,
+  ClipView as ClipView_$
+} from './views'
+
+let _Hitbox = (hook) => _ctor(Hitbox_$, hook)
+let _Text = (text) => _ctor(Text_$, text)
+let _DropdownListItem = (item) => _ctor(DropdownListItem_$, item)
+let _Dropdown = (drops, selected_index) => _ctor(Dropdown_$, drops, selected_index)
+let _List = (items) => _ctor(List_$, items)
+let _ScrollableView = () => _ctor(ScrollableView_$)
+let _ScrollBar = (children) => _ctor(ScrollBar_$)
+let _ScrollThumb = () => _ctor(ScrollThumb_$)
+let _ClipView = () => _ctor(ClipView_$)
+
+
+let ScrollBar = () => {
+  let parent = _ScrollBar()
+
+  let children = [
+    _ScrollThumb()
+  ]
+
+  children.forEach(_ => _.parent = parent)
+  parent.children = children
+
+  return parent
+}
+
+let ClipView = (content) => {
+  let parent = _ClipView()
+
+  let children = [
+    content
+  ]
+
+  children.forEach(_ => _.parent = parent)
+  parent.children = children
+
+  return parent
+}
+
+
+export const DropdownListItem = (item) => {
+  let parent = _DropdownListItem(item)
+  
+  let children = [
+    _Hitbox(parent.on_click),
+    _Text(item)
+  ]
+
+  children.forEach(_ => _.parent = parent)
+  parent.children = children
+
+  return parent
+}
+
+export const Dropdown = (drops, selected_index) => {
+  let parent = _Dropdown(drops, selected_index)
+  
+
+  let c0 = List(DropdownListItem, drops)
+  parent.a_view_ref_to_show_when_is_open = c0
+
+  let children = [
+    _Hitbox(parent.on_click),
+    _Text(parent.active),
+    _Icon('drop'),
+    c0
+  ]
+
+  children.forEach(_ => _.parent = parent)
+  parent.children = children
+
+  return parent
+}
+
+export const List = (Content, items) => {
+  let parent = _List(items)
+
+  
+  let _items = []
+  for (let i = 0; i < _items.length - 1; i++) {
+    let i0 = items[i]
+    let i1 = items[i+1]
+    children.push(Content(i0))
+    children.push(Content(i1))
+  }
+  
+  let children = [
+    ScrollableView(_items)
+  ]
+
+  children.forEach(_ => _.parent = parent)
+  parent.children = children
+
+  return parent
+}
+
+export const ScrollableView = (content) => {
+  let parent = _ScrollableView()
+
+  let children = [
+    _ScrollBar(),
+    _ClipView(content)
+  ]
+
+  children.forEach(_ => _.parent = parent)
+  parent.children = children
+
+  return parent
+}
+
+
